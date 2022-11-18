@@ -19,7 +19,7 @@ export default defineComponent({
   computed: {
     formattedDate() {
       let options = { year: 'numeric', month: 'long', day: 'numeric' };
-      return new Date(this.date)?.toLocaleDateString('en-Us', options);
+      return new Date(this.date)?.toLocaleDateString(navigator.language, options);
     },
     dateTime() {
       let d = new Date(this.date)?.toISOString()

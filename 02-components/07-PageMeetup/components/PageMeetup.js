@@ -9,10 +9,9 @@ export default defineComponent({
 
   data() {
     return {
-      meetup: {},
+      meetup: null,
       isLoading: true,
-      isError: false
-
+      error: null,
     }
   },
   props: {
@@ -31,24 +30,21 @@ export default defineComponent({
   methods: {
     async updateMeetup() {
       this.isLoading = true
-      this.isError = false
-      this.meetup = {};
+      this.error = null
+      this.meetup = null;
       try {
         let meetup = await fetchMeetupById(this.meetupId);
-        if (meetup) {
-          this.meetup = meetup;
-        }
-
-      } catch {
-        this.isError = true
-        this.meetup = {};
+        this.meetup = meetup;
+      } catch (err) {
+        this.error = err
+      } finally {
+        this.isLoading = false
       }
-      this.isLoading = false
     }
   },
 
   watch: {
-    meetupId(old, newVal) {
+    meetupId() {
       this.updateMeetup()
     }
   },
@@ -61,14 +57,14 @@ export default defineComponent({
 
   template: `
     <div class="page-meetup">
-      <MeetupView v-if="!isLoading && !isError" :meetup="this.meetup"></MeetupView>
-      <!-- meetup view -->
+      <MeetupView v-if="meetup" :meetup="this.meetup"></MeetupView>
+
       <UiContainer v-if="isLoading">
         <UiAlert>Загрузка...</UiAlert>
       </UiContainer>
 
-      <UiContainer v-if="isError">
-        <UiAlert>Test Error</UiAlert>
+      <UiContainer v-if="error">
+        <UiAlert>{{ error.message}}</UiAlert>
       </UiContainer>
       
     </div>`,
