@@ -1,7 +1,7 @@
 import { defineComponent } from '../vendor/vue.esm-browser.js';
 import MeetupDescription from '../../02-MeetupDescription/components/MeetupDescription.js';
 import MeetupCover from '../../03-MeetupCover/components/MeetupCover.js';
-import MeetupInfo from '../../04-MeetupInfo/components/Meetupinfo.js';
+import MeetupInfo from '../../04-MeetupInfo/components/MeetupInfo.js';
 import MeetupAgenda from '../../05-MeetupAgenda/components/MeetupAgenda.js';
 import MeetupAgendaItem from '../../05-MeetupAgenda/components/MeetupAgendaItem.js';
 
