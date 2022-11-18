@@ -2,16 +2,7 @@ import { defineComponent } from '../vendor/vue.esm-browser.js';
 import UiContainer from './UiContainer.js';
 import UiAlert from './UiAlert.js';
 import { fetchMeetupById } from '../meetupService.js';
-import MeetupView from '../../06-MeetupView/components/MeetupView.js';
-
-import MeetupDescription from '../../02-MeetupDescription/components/MeetupDescription.js';
-import MeetupCover from '../../03-MeetupCover/components/MeetupCover.js';
-import MeetupInfo from '../../04-MeetupInfo/components/Meetupinfo.js';
-import MeetupAgenda from '../../05-MeetupAgenda/components/MeetupAgenda.js';
-import MeetupAgendaItem from '../../05-MeetupAgenda/components/MeetupAgendaItem.js';
-
-
-
+import MeetupView from '/02-components/06-MeetupView/components/MeetupView.js';
 export default defineComponent({
 
   name: 'PageMeetup',
