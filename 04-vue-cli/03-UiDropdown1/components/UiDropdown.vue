@@ -1,21 +1,25 @@
 <template>
-  <div class="dropdown dropdown_opened">
-    <button type="button" class="dropdown__toggle dropdown__toggle_icon">
-      <ui-icon icon="tv" class="dropdown__icon" />
-      <span>Title</span>
+  <div class="dropdown" :class="{ 'dropdown_opened': isOpen }">
+    <button @click="isOpen = !isOpen" type="button" class="dropdown__toggle" :class="{
+      'dropdown__toggle_icon': hasIcon
+    }">
+      <ui-icon v-if="selectedOption && selectedOption.icon" :icon="selectedOption.icon" class="dropdown__icon" />
+      <span>{{ optionTitle }}</span>
     </button>
 
-    <div class="dropdown__menu" role="listbox">
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <ui-icon icon="tv" class="dropdown__icon" />
-        Option 1
-      </button>
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <ui-icon icon="tv" class="dropdown__icon" />
-        Option 2
+    <div v-show="isOpen" class="dropdown__menu" role="listbox">
+      <button v-for="option in options" @click="changeOption(option.value)" class="dropdown__item" :class="{
+        'dropdown__item_icon': hasIcon
+      }" role="option" type="button">
+        <ui-icon v-if="option.icon" :icon="option.icon" class="dropdown__icon" />
+        {{ option.text }}
       </button>
     </div>
   </div>
+  <select @change="changeOption($event.target.value)" name="" hidden>
+    <option v-for="option in options" :selected="modelValue == option.value" :value="option.value">{{ option.text }}
+    </option>
+  </select>
 </template>
 
 <script>
@@ -23,9 +27,43 @@ import UiIcon from './UiIcon';
 
 export default {
   name: 'UiDropdown',
+  data() {
+    return {
+      isOpen: false,
+    }
+  },
+  emits: ['update:modelValue'],
+  computed: {
+    optionTitle() {
+      return this.selectedOption ? this.selectedOption.text : this.title
+    },
+    hasIcon() {
+      return this.options.find(el => el.icon)
+    },
+    selectedOption() {
+      return this.options.find(el => this.modelValue == el.value)
 
+    }
+  },
   components: { UiIcon },
-};
+  props: {
+    options: {
+      required: true,
+      type: Array,
+    },
+    title: {
+      required: true,
+      type: String,
+    },
+    modelValue: String,
+  },
+  methods: {
+    changeOption(newValue) {
+      this.$emit('update:modelValue', newValue)
+      this.isOpen = false
+    }
+  }
+}
 </script>
 
 <style scoped>
