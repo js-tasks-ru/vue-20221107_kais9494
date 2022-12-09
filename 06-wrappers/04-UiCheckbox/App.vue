@@ -9,6 +9,7 @@
     <h2>Array</h2>
     <p>Checked Array: {{ checkedArray }}</p>
     <p><ui-checkbox v-model="checkedArray" value="A" name="array-example">Check A</ui-checkbox></p>
+
     <p><ui-checkbox v-model="checkedArray" value="B" name="array-example">Check B</ui-checkbox></p>
     <p><ui-checkbox v-model="checkedArray" value="C" name="array-example">Check C</ui-checkbox></p>
     <p>

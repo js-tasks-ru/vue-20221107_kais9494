@@ -1,8 +1,10 @@
 <template>
   <div class="image-uploader">
-    <label class="image-uploader__preview image-uploader__preview-loading" style="--bg-url: url('/link.jpeg')">
-      <span class="image-uploader__text">Загрузить изображение</span>
-      <input type="file" accept="image/*" class="image-uploader__input" />
+    <label class="image-uploader__preview" :class="{ 'image-uploader__preview-loading': isLoading }"
+      :style="previewStyleImg">
+      <span class="image-uploader__text">{{ statusMessage }}</span>
+      <input ref="inputImg" v-bind="$attrs" type="file" accept="image/*" @click="onClickInput($event)"
+        @change="onChangeInput($event)" class="image-uploader__input" />
     </label>
   </div>
 </template>
@@ -10,12 +12,74 @@
 <script>
 export default {
   name: 'UiImageUploader',
+  inheritAttrs: false,
+
+  data() {
+    return {
+      isLoading: false,
+      previewUrl: this.preview
+    }
+  },
+
+  emits: ['remove', 'select', 'upload', 'error'],
+
+  computed: {
+    statusMessage() {
+      if (this.isLoading) {
+        return "Загрузка..."
+      } else if (this.previewUrl) {
+        return "Удалить изображение"
+      } else {
+        return "Загрузить изображение"
+      }
+    },
+    previewStyleImg() {
+      return this.previewUrl ? "--bg-url: url('" + this.previewUrl + "')" : '--bg-url';
+    }
+  },
+  methods: {
+    onClickInput(e) {
+      if (this.isLoading) {
+        e.preventDefault();
+      } else if (this.previewUrl) {
+        this.$refs.inputImg.value = ''
+        this.$emit('remove');
+        this.previewUrl = '';
+        e.preventDefault()
+      }
+    },
+    onChangeInput(e) {
+      let file = e.target.files[0]
+      this.$emit('select', file);
+      this.previewUrl = URL.createObjectURL(file)
+      if (this.uploader) {
+        this.isLoading = true
+        this.uploader(file).then((data) => {
+          console.log(data)
+          this.$emit('upload', data);
+        }).catch((err) => {
+          this.$emit('error', err);
+        }).finally(() => {
+          this.previewUrl = this.preview
+
+          this.$refs.inputImg.value = ''
+          this.isLoading = false
+        })
+      } else {
+        this.$refs.inputImg.value = ''
+      }
+    }
+  },
+
+  props: {
+    preview: String,
+    uploader: Function,
+  }
 };
 </script>
 
 <style scoped>
-.image-uploader {
-}
+.image-uploader {}
 
 .image-uploader__input {
   opacity: 0;

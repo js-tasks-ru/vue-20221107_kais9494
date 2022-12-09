@@ -1,11 +1,7 @@
 <template>
   <div id="app" class="sample container">
-    <ui-image-uploader
-      :preview="image"
-      :uploader="uploadImage"
-      @remove="image = undefined"
-      @upload="image = $event.image"
-    />
+    <ui-image-uploader :preview="image" :uploader="uploadImage" @remove="image = undefined"
+      @upload="image = $event.image" />
   </div>
 </template>
 
