@@ -24,19 +24,6 @@ export default {
 
   emits: ['update:modelValue'],
 
-  // data() {
-  //   return {
-  //     formattedDate: ''
-  //   }
-  // },
-
-  // created() {
-  //   this.formattedDate = this.getFormattedDate();
-  //   // console.log(this.formattedDate)
-  // },
-
-
-
   props: {
     type: {
       type: String,
@@ -60,14 +47,12 @@ export default {
         return this.dateObj.toISOString().slice(11, 16)
       } else {
         return this.dateObj.toISOString().slice(0, 16)
-
       }
     },
 
     dateObj() {
       return new Date(this.modelValue)
     }
-
   },
 
   methods: {
@@ -101,17 +86,6 @@ export default {
         return NaN
       }
     },
-    // getFormattedDate() {
-
-    //   if (this.type == 'date') {
-    //     return this.dateObj.toISOString().slice(0, 10)
-    //   } else if (this.type == 'time') {
-    //     return this.dateObj.toISOString().slice(11, 16)
-    //   } else {
-    //     return this.dateObj.toISOString().slice(0, 16)
-
-    //   }
-    // }
   }
 
 };

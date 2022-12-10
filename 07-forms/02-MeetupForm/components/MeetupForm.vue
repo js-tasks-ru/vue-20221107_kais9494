@@ -1,44 +1,39 @@
 <template>
-  <form class="meetup-form">
+  <form class="meetup-form" @submit.prevent="submit">
     <div class="meetup-form__content">
       <fieldset class="meetup-form__section">
         <ui-form-group label="Название">
-          <ui-input name="title" />
+          <ui-input name="title" v-model="localMeetup.title" />
         </ui-form-group>
         <ui-form-group label="Дата">
-          <ui-input-date type="date" name="date" />
+          <ui-input-date type="date" name="date" v-model="localMeetup.date" />
         </ui-form-group>
         <ui-form-group label="Место">
-          <ui-input name="place" />
+          <ui-input name="place" v-model="localMeetup.place" />
         </ui-form-group>
         <ui-form-group label="Описание">
-          <ui-input multiline rows="3" name="description" />
+          <ui-input multiline rows="3" name="description" v-model="localMeetup.description" />
         </ui-form-group>
         <ui-form-group label="Изображение">
           <!--
                Предлагается сохранять файл для будущей загрузки во временное поле imageToUpload
                и передавать в объекте со всеми данными формы
           -->
-          <ui-image-uploader
-            name="image"
-            :preview="meetup.image"
-            @select="meetup.imageToUpload = $event"
-            @remove="meetup.imageToUpload = null"
-          />
+          <ui-image-uploader name="image" v-model="localMeetup.image" :preview="localMeetup.image"
+            @select="localMeetup.imageToUpload = $event" @remove="localMeetup.imageToUpload = null" />
         </ui-form-group>
       </fieldset>
 
       <h3 class="meetup-form__agenda-title">Программа</h3>
-      <!--
-      <meetup-agenda-item-form
-         :key="agendaItem.id"
-         :agenda-item="..."
-         class="meetup-form__agenda-item"
-       />
-       -->
+
+      <!-- <template v-if="agendaItems.length"> -->
+      <meetup-agenda-item-form v-for="(agendaItem, index) in localMeetup.agenda" :key="agendaItem.id"
+        :agenda-item="agendaItem" @update:agendaItem="localMeetup.agenda[index] = $event"
+        @remove="removeAgendaItemForm(agendaItem.id)" class="meetup-form__agenda-item" />
+      <!-- </template> -->
 
       <div class="meetup-form__append">
-        <button class="meetup-form__append-button" type="button" data-test="addAgendaItem">
+        <button class="meetup-form__append-button" type="button" data-test="addAgendaItem" @click="addAgendaItemForm">
           + Добавить этап программы
         </button>
       </div>
@@ -47,9 +42,10 @@
     <div class="meetup-form__aside">
       <div class="meetup-form__aside-stick">
         <!-- data-test атрибуты используются для поиска нужного элемента в тестах, не удаляйте их -->
-        <ui-button variant="secondary" block class="meetup-form__aside-button" data-test="cancel">Отмена</ui-button>
+        <ui-button variant="secondary" block @click="$emit('cancel')" class="meetup-form__aside-button"
+          data-test="cancel">Отмена</ui-button>
         <ui-button variant="primary" block class="meetup-form__aside-button" data-test="submit" type="submit">
-          SUBMIT
+          {{ submitText }}
         </ui-button>
       </div>
     </div>
@@ -57,7 +53,7 @@
 </template>
 
 <script>
-// import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'lodash-es';
 
 import MeetupAgendaItemForm from './MeetupAgendaItemForm';
 import UiButton from './UiButton';
@@ -65,7 +61,8 @@ import UiFormGroup from './UiFormGroup';
 import UiImageUploader from './UiImageUploader';
 import UiInput from './UiInput';
 import UiInputDate from './UiInputDate';
-// import { createAgendaItem } from '../meetupService';
+// import { createMeetup } from '../meetupService';
+import { createAgendaItem } from '../meetupService';
 
 export default {
   name: 'MeetupForm',
@@ -77,6 +74,18 @@ export default {
     UiImageUploader,
     UiInput,
     UiInputDate,
+  },
+  data() {
+    return {
+      localMeetup: {},
+      //   agendaItems: [],
+      lastAgendaItemId: 0,
+      createAgendaItem,
+      cloneDeep
+    }
+  },
+  mounted() {
+    this.localMeetup = this.cloneDeep(this.meetup)
   },
 
   props: {
@@ -90,6 +99,28 @@ export default {
       default: '',
     },
   },
+  emits: ['cancel', 'submit'],
+  methods: {
+    addAgendaItemForm() {
+
+      let newAgendaItem = this.createAgendaItem();
+      let agendaQty = this.localMeetup.agenda.length
+      if (agendaQty > 0) {
+        let lastAgendaItem = this.localMeetup.agenda[agendaQty - 1]
+        if (lastAgendaItem.endsAt) newAgendaItem.startsAt = lastAgendaItem.endsAt;
+      }
+      this.localMeetup.agenda.push(newAgendaItem)
+    },
+    removeAgendaItemForm(id) {
+      this.localMeetup.agenda = this.localMeetup.agenda.filter(item =>
+        item.id != id
+      )
+    },
+
+    submit() {
+      this.$emit('submit', this.cloneDeep(this.localMeetup))
+    }
+  }
 };
 </script>
 
@@ -114,7 +145,7 @@ export default {
   margin: 0 0 12px 0;
 }
 
-.meetup-form__agenda-item + .meetup-form__agenda-item {
+.meetup-form__agenda-item+.meetup-form__agenda-item {
   margin-top: 24px;
 }
 
