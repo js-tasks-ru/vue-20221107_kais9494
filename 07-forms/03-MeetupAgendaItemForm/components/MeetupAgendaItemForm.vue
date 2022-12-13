@@ -21,12 +21,10 @@
       </div>
     </div>
 
-    <template v-for="field in $options.agendaItemFormSchemas[localAgendaItem.type]">
-      <ui-form-group :label="field.label">
-        <component :is="field.component" v-bind="field.props" v-model="localAgendaItem[field.props.name]">
-        </component>
-      </ui-form-group>
-    </template>
+    <ui-form-group v-for="field in $options.agendaItemFormSchemas[localAgendaItem.type]" :label="field.label">
+      <component :is="field.component" v-bind="field.props" v-model="localAgendaItem[field.props.name]">
+      </component>
+    </ui-form-group>
 
   </fieldset>
 </template>

@@ -1,10 +1,6 @@
 <template>
   <div v-if="!sensors">Loading...</div>
   <template v-else>
-    <!-- <template v-for="sensor in sensors">
-      {{ sensor.value }}
-    </template> -->
-
     <sensors-data-row v-for="sensor in sensors" :key="sensor.id" :sensor="sensor" />
   </template>
 </template>
@@ -13,7 +9,6 @@
 import { SensorsDataController } from '../services/SensorsDataController';
 import { SensorsDataStreamingService } from '../services/SensorsDataStreamingService';
 import SensorsDataRow from './SensorsDataRow';
-import { reactive, toRefs, ref, toRef, triggerRef } from 'vue'
 
 export default {
   name: 'SensorsDataView',
@@ -22,7 +17,7 @@ export default {
 
   data() {
     return {
-      sensors: {},
+      sensors: null,
     };
   },
 
@@ -46,9 +41,10 @@ export default {
       this.setData(data);
     },
     setData(sensors) {
+      this.sensors = {}
       const keys = Object.keys(sensors);
       keys.forEach(key => {
-        this.sensors[key] = toRefs(reactive(sensors[key]))
+        this.sensors[key] = { ...sensors[key] }
       });
     },
   },

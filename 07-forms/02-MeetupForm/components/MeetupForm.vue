@@ -78,13 +78,12 @@ export default {
   data() {
     return {
       localMeetup: {},
-      //   agendaItems: [],
       lastAgendaItemId: 0,
       createAgendaItem,
       cloneDeep
     }
   },
-  mounted() {
+  created() {
     this.localMeetup = this.cloneDeep(this.meetup)
   },
 

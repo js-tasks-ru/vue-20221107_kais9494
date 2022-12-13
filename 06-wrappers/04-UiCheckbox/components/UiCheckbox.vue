@@ -1,6 +1,6 @@
 <template>
   <label class="checkbox">
-    <input v-bind="{ checked: checked, ...$attrs }" :name="name" :value="value" type="checkbox" class="checkbox__input"
+    <input v-bind="{ ...$attrs }" :name="name" :value="value" type="checkbox" class="checkbox__input"
       v-model="modelValueProxy" />
     <span class="checkbox__box"></span>
     <slot></slot>
@@ -16,15 +16,6 @@ export default {
   emits: ['update:modelValue'],
 
   computed: {
-    checked() {
-      if (this.name == 'array-example') {
-        return this.modelValue.includes(this.value)
-      } else if (this.name == 'set-example') {
-        return this.modelValue.has(this.value)
-      } else {
-        return this.modelValue;
-      }
-    },
     modelValueProxy: {
       get() {
         return this.modelValue
