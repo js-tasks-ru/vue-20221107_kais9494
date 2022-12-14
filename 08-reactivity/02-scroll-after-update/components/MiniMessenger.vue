@@ -1,19 +1,22 @@
 <template>
   <main class="mini-messenger">
-    <ul class="messages">
+    <ul ref="messages" class="messages">
       <li v-for="message in messages" :key="message.id" ref="items" class="message">
         {{ message.text }}
       </li>
     </ul>
     <form @submit.prevent="handleSendSubmit">
       <div class="input-group">
-        <input v-model="newMessage" type="text" class="form-control messenger__input" placeholder="New message" />
+        <input ref="input" v-model="newMessage" type="text" class="form-control messenger__input"
+          placeholder="New message" />
       </div>
     </form>
   </main>
 </template>
 
 <script>
+import { nextTick } from 'vue'
+
 let lastId = 0;
 
 export default {
@@ -32,8 +35,10 @@ export default {
   },
 
   methods: {
-    handleSendSubmit() {
+    async handleSendSubmit() {
       this.send();
+      await nextTick()
+      this.scroll()
     },
 
     send() {
@@ -43,6 +48,12 @@ export default {
       });
       this.newMessage = '';
     },
+    scroll() {
+      this.$refs.messages.scrollTo({
+        top: this.$refs.messages.clientHeight,
+        behavior: 'smooth'
+      });
+    }
   },
 };
 </script>

@@ -40,12 +40,17 @@ export default {
     callback(data) {
       this.setData(data);
     },
-
     setData(sensors) {
-      this.sensors = sensors;
+      this.sensors = {}
+      const keys = Object.keys(sensors);
+      keys.forEach(key => {
+        this.sensors[key] = { ...sensors[key] }
+      });
     },
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+
+</style>

@@ -6,15 +6,8 @@
     </button>
 
     <div v-show="isOpen" class="dropdown__menu" role="listbox">
-      <button
-        v-for="option in options"
-        :key="option.value"
-        class="dropdown__item"
-        :class="{ dropdown__item_icon: hasIcons }"
-        role="option"
-        type="button"
-        @click="select(option.value)"
-      >
+      <button v-for="option in options" :key="option.value" class="dropdown__item"
+        :class="{ dropdown__item_icon: hasIcons }" role="option" type="button" @click="select(option.value)">
         <ui-icon v-if="option.icon" :icon="option.icon" class="dropdown__icon" />
         {{ option.text }}
       </button>

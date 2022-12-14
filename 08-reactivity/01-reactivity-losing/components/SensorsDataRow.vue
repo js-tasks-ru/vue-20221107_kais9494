@@ -27,8 +27,7 @@ export default {
   font-size: 16px;
 }
 
-.sensor-data__label {
-}
+.sensor-data__label {}
 
 .sensor-data__value {
   font-weight: bold;
