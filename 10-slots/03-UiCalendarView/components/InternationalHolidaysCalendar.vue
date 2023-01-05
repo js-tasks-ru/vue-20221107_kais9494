@@ -1,8 +1,12 @@
 <template>
   <UiCalendarView>
-    <div v-for="holiday in internationalHolidaysMap[0][7]" :key="holiday" class="holiday">
-      {{ holiday }}
-    </div>
+    <template v-slot:item-slot="{ date }">
+      <template v-if="getHolidayByDate(date)">
+        <div v-for="holidayObj in getHolidayByDate(date)" class="holiday">
+          {{ holidayObj.holiday }}
+        </div>
+      </template>
+    </template>
   </UiCalendarView>
 </template>
 
@@ -77,6 +81,17 @@ export default {
       return result;
     },
   },
+
+  methods: {
+    getHolidayByDate(date) {
+
+      let currentDateHolidays = this.internationalHolidays.filter(holiday => {
+        return (holiday.date == date.getDate() && holiday.month == date.getMonth() + 1)
+      })
+
+      return currentDateHolidays.length ? currentDateHolidays : false
+    }
+  }
 };
 </script>
 
