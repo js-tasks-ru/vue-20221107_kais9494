@@ -1,16 +1,41 @@
 <template>
-  <button class="button-group__button button-group__button_active" type="button" aria-selected="false">Button</button>
+  <button @click="selectBtn" class="button-group__button " :class="{'button-group__button_active':isSelected}"
+    type="button" aria-selected="false">
+    <slot></slot>
+
+  </button>
 </template>
 
 <script>
 export default {
   name: 'UiButtonGroupItem',
 
+  created() {
+    if (this.$parent.$options.name != 'UiButtonGroup') {
+      console.warn('Component UiButtonGroupItem must be used in component UiButtonGroup')
+    }
+  },
+
+  computed: {
+    isSelected() {
+      return this.$parent.$props.modelValue == this.value
+    }
+
+  },
+
   props: {
     value: {
       required: true,
     },
+    isActive: Boolean,
+    // selected: String
   },
+
+  methods: {
+    selectBtn() {
+      this.$parent.$emit('update:modelValue', this.value)
+    }
+  }
 };
 </script>
 
